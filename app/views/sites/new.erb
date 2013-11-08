@@ -1,0 +1,30 @@
+<h1>创建网站</h1>
+<form action='/site/create' method="post">
+	<div>
+		<label for="site[name]">网站名称:</label>
+		<input type="text" name="site[name]" />
+	</div>
+	<div>
+		<label for="site[mark]">网站标识:</label>
+		<input type="text" name="site[mark]" />
+	</div>
+	<div>
+		<label for="site[url]">网址(http//):</label>
+		<input type="text" name="site[url]" />
+	</div>
+	<div>
+	<div>
+		<label for="site[keyword]">关键字:</label>
+		<input type="text" name="site[keyword]" />
+	</div>
+	<div>
+		<label for="site[match_tags]">匹配标签:</label>
+		<input type="text" name="site[match_tags]" />
+	</div>
+	<div>
+		<label for="site[ignore_tags]">过滤标签:</label>
+		<input type="text" name="site[ignore_tags]" />
+	</div>
+
+	<input type="submit" value="提交" />
+</form>
