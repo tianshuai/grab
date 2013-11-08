@@ -15,7 +15,7 @@
 	</div>
 	<div>
 	<div>
-		<label for="site[keyword]">关键字:</label>
+		<label for="site[keyword]">选择器:</label>
 		<input type="text" name="site[keyword]" value="<%= @site.try(:keyword) %>" />
 	</div>
 	<div>
@@ -26,5 +26,14 @@
 		<label for="site[ignore_tags]">过滤标签:</label>
 		<input type="text" name="site[ignore_tags]" value="<%= @site.try(:ignore_tags) %>" />
 	</div>
+	<div>
+		<label for="site[conf]">间隔时间(s):</label>
+		<input type="text" name="site[sleep]" value="<%= @site.try(:sleep) %>" />
+	</div>
+	<div>
+		<label for="site[conf]">配置信息(用于动态执行此处):</label><br />
+		<textarea name="site[conf]", style="width:800px;height:500px;" ><%= @site.try(:conf) %></textarea>
+	</div>
+
 	<input type="submit" value="提交" />
 </form>

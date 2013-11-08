@@ -32,6 +32,8 @@ namespace :grab do
 	  keyword = web.keyword
 	  type = args[:type]
 	  match_tags = web.match_tags
+	  conf = web.conf || ''
+	  pause = web.sleep || 3
 	  
 
 	  Anemone.crawl(web.url) do |d|
@@ -71,20 +73,24 @@ namespace :grab do
 				if doc.css(keyword).present?
 				  state = 2
 
+				  if conf.present?
+					eval(conf)
+				  end
+
+=begin
 				  #标题
 				  if doc.css("h1#PreHeaderContainer").present?
 					page_title = doc.css("h1#PreHeaderContainer").first.content
 				  end
-
 				  #封面图url
 				  if doc.css("div.SingleBigImage img").present?
 					page_cover_img = doc.css("div.SingleBigImage img").first['src']
 				  end
-
 				  #描述
 				  if doc.css("div.SingleArticleMainDescriptionNew").present?
 					page_desc = doc.css("div.SingleArticleMainDescriptionNew").first.to_html
 				  end
+=end
 
 				else
 				  p+=1
@@ -109,15 +115,16 @@ namespace :grab do
 				content: page_content,
 				category: match_tags
 			  }
-			  web_page = WebPage.new(hash)
-			  if web_page.save
-				q+=1
-				puts "grab_success! #{q}"
-			  end
+			  #web_page = WebPage.new(hash)
+
+			  #if web_page.save
+			#	q+=1
+			#	puts "grab_success! #{q}"
+			 # end
 			  #end----------------------
 			end # if WebPage.exist_url?
 			#一秒的停顿时间
-			sleep 5
+			sleep pause
 
 		  end #if page?
 		end # if page loop
