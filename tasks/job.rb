@@ -63,6 +63,7 @@ namespace :grab do
 				if doc.css(keyword).present?
 				  state = 2
 
+				  #因为不同网站有不同规则,so从数据库动态读取
 				  if conf.present?
 					eval(conf)
 				  end
@@ -105,12 +106,12 @@ namespace :grab do
 				content: page_content,
 				category: match_tags
 			  }
-			  #web_page = WebPage.new(hash)
+			  web_page = WebPage.new(hash)
 
-			  #if web_page.save
-			#	q+=1
-			#	puts "grab_success! #{q}"
-			 # end
+			  if web_page.save
+				q+=1
+				puts "grab_success! #{q}"
+			  end
 			  #end----------------------
 			end # if WebPage.exist_url?
 			#一秒的停顿时间
