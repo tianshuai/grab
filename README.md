@@ -3,10 +3,10 @@ grab
 
 ##grab 抓取网站图片
 
-*语言: ruby 2.0.0 +
-*数据库: mysql 5.5 +
-*环境: linux
-*作者: 视觉中国 by TianShuai
+* 语言: ruby 2.0.0 +
+* 数据库: mysql 5.5 +
+* 环境: linux
+* 作者: 视觉中国 by TianShuai
 
 ##介绍：分为前台页面内容显示及后台的抓取任务
 
@@ -22,8 +22,7 @@ grab
 1.在该目录下打开 终端，首次执行需要安装gem，bundle install,启动命令：rackup ,默认端口号为9292
 
 
-4.抓取网页执行的任务：rake tian:spider_img[tab,type];需要传入参数tab,type;tab是要抓取的网站标识，type为备用字段，不填默认为1
+4.抓取网页执行的任务：rake grab:spider[mark,type];需要传入参数tab,type;tab是要抓取的网站标识，type为备用字段，不填默认为1
 
-5.分析链接并抓取标题、描述及图片地址的任务：rake tian:analyse_page[tab,type]
 
 

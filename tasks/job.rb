@@ -4,21 +4,10 @@
 #命令空间 Example
 namespace :grab do
 
-  #测试
-  desc 'add_db-------test'
-  task :web_info_add do
-	puts '=====start====='
-	(1..10).each do |a|
-		WebInfo.create({tab: "a#{a}",title: "test#{a}",url: "www.#{a}.com"})
-	end
-	puts WebInfo.all.size
-  end
-
   #抓取网页（需传入参数：tag=>网站标识，type=>还未定义）
   desc '抓取网页'
   task :spider, [:mark,:type] do |t,args|
 	require 'anemone'
-	require 'digest/md5'
 	args.with_defaults(:mark => 'def', :type => 1)
 	puts '======start======='
 	web = Site.find_by(mark: args[:mark])
@@ -33,6 +22,7 @@ namespace :grab do
 	  type = args[:type]
 	  match_tags = web.match_tags
 	  conf = web.conf || ''
+	  #停顿时间
 	  pause = web.sleep || 3
 	  
 

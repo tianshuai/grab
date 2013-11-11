@@ -6,4 +6,5 @@ gem "sinatra-activerecord",	'1.2.3'
 
 gem 'anemone',	'0.7.2'
 gem 'will_paginate', '~> 3.0'
+gem 'nokogiri', '~> 1.6.0'
 
