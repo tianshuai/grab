@@ -4,6 +4,11 @@ helpers do
   def page_title(name)
 	"#{name}bar"
   end
+
+  def truncate(str, length=15)
+	return str if str.blank?
+	return str[0, length]
+  end
 end
 
 get '/'	do
@@ -61,12 +66,24 @@ get '/site/destroy/:id' do
 	  redirect '/'
 	end
   end
+end
 
+#url记录
+get '/site/page_list' do
+  site_id = params[:site_id] || ''
+  stat = params[:stat] || ''
+  @web_pages = WebPage.site_list(site_id).state_list(stat).paginate(page: params[:page], per_page: 100)
 
-  #url记录
-  get '/site/web_page/list' do
-	site_id = params[:site_id] || 0
-	WebPage.where()
+  erb :'sites/page_list'
+end
+
+#抓取详情页
+get '/site/show/:id' do
+  begin
+    @web_page = WebPage.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+	halt 401, '内容不存在!'
+  else
+    erb :'sites/show'
   end
-
 end

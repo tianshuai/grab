@@ -8,6 +8,7 @@
 		<td>选择器(判断是否要抓取的页面)</td>
 		<td>匹配标签</td>
 		<td>过滤标签</td>
+		<td>间隔时间</td>
 		<td>创建时间</td>
 		<td>操作</td>
 	</tr>
@@ -20,8 +21,9 @@
 		<td><%= d.keyword %></td>
 		<td><%= d.match_tags %></td>
 		<td><%= d.ignore_tags %></td>
+		<td><%= d.sleep %></td>
 		<td><%= d.created_at %></td>
-		<td><a href="/site/edit/<%= d.id %>">编辑</a> | <a href="/site/destroy/<%= d.id %>" >删除</a></td>
+		<td><a href="/site/page_list?site_id=<%= d.id %>">记录</a> | <a href="/site/edit/<%= d.id %>">编辑</a> | <a href="/site/destroy/<%= d.id %>" >删除</a></td>
 	</tr>
 	<%end%>
 </table>

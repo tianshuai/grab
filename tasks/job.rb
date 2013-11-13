@@ -15,7 +15,7 @@ namespace :grab do
 	if web.present?
 	  puts '要抓取的网站存在...'
 	  #初始化参数
-	  i,m,n,o,p,q=0,0,0,0,0,0
+	  i,m,n,o,p,q,r = 0,0,0,0,0,0,0
 	  site_id = web.id
 	  mark = web.mark
 	  keyword = web.keyword
@@ -24,9 +24,11 @@ namespace :grab do
 	  conf = web.conf || ''
 	  #停顿时间
 	  pause = web.sleep || 3
-	  
 
-	  Anemone.crawl(web.url) do |d|
+	  #抓取选项
+	  opt = { discard_page_bodies: true, threads: 1, obey_robots_txt: false, user_agent: "Web Share", large_scale_crawl: true, read_timeout: 10, depth_limit: 100 }
+
+	  Anemone.crawl(web.url, opt) do |d|
 		if web.ignore_tags.present?
 		  puts "need filter url tags: #{web.ignore_tags}"
 		  d.skip_links_like /#{web.ignore_tags.gsub(',','|')}/ 
@@ -41,32 +43,50 @@ namespace :grab do
 		puts 'begin grab...'
 		d.on_pages_like(key) do |page|
 		  if page and page.url.present?
-			page_url = page.url.to_s
-			if WebPage.exist_url?(page_url)
-			  i+=1
-			  puts "link already exists! +#{i}"
-			else
-			  m+=1
-			  puts "new link: +#{m}"
-			  #初始化参数
-			  page_title = ''
-			  page_cover_img = ''
-			  page_desc = ''
-			  page_tags = ''
-			  page_content = ''
-			  state = 0
+			  next if page.body == nil
+			  page_url = page.url.to_s
+			  puts "url: #{page_url}"
 			  #抓取信息start
 			  if page.doc
-				#start--------------------------
 				doc = page.doc
 				#是否是要抓的页面?
 				if doc.css(keyword).present?
-				  state = 2
+				  if WebPage.exist_url?(page_url)
+				    i+=1
+				    puts "link already exists! +#{i}"
+				  else
+				    m+=1
+				    puts "new link: +#{m}"
+				    #初始化参数
+				    page_title = ''
+				    page_cover_img = ''
+				    page_desc = ''
+				    page_tags = ''
+				    page_content = ''
+					page_images = ''
 
-				  #因为不同网站有不同规则,so从数据库动态读取
-				  if conf.present?
-					eval(conf)
-				  end
+
+					#因为不同网站有不同规则,so从数据库动态读取配置
+					if conf.present?
+					  #eval(conf)
+					end
+
+					#描述
+					if doc.css("font.arial18").present?
+					  page_desc = doc.send('css', 'font.arial18').first.parent
+					  page_desc = page_desc.gsub(/<script.*?>.*?<\/script>/imx, '')
+					  page_desc = page_desc.gsub(/<style.*?>.*?<\/style>/imx, '')
+					  #不加?贪婪模式
+					  page_desc = page_desc.gsub(/<table.*?>.*<\/table>/imx, '')
+					  #puts page_desc
+
+					  if page_desc.present?
+						puts page_desc.class
+						
+
+					  end
+
+					end
 
 =begin
 				  #标题
@@ -83,38 +103,40 @@ namespace :grab do
 				  end
 =end
 
+					#抓取信息end
+					# 保存到数据库
+					hash = {
+						site_id: site_id,
+						url: page_url,
+						mark: mark,
+						kind: type,
+						state: 2,
+						title: page_title,
+						description: page_desc,
+						cover_img: page_cover_img,
+						tags: page_tags,
+						content: page_content,
+						category: match_tags
+					}
+					web_page = WebPage.new(hash)
+
+					#if web_page.save
+					if 1==1
+					  q+=1
+					  puts "grab_success! #{q}"
+					else
+					  r+=1
+					  puts "save failed! #{r}"
+					end
+
+				  end # if WebPage.exist_url?
 				else
 				  p+=1
 				  puts "invalid link: #{p}"
-				  state = 1
 				end # if doc.css.present?
-
-			  end #if page.doc
-			  
-			  #抓取信息end
-			  # 保存到数据库
-			  hash = {
-				site_id: site_id,
-				url: page_url,
-				mark: mark,
-				kind: type,
-				state: state,
-				title: page_title,
-				description: page_desc,
-				cover_img: page_cover_img,
-				tags: page_tags,
-				content: page_content,
-				category: match_tags
-			  }
-			  web_page = WebPage.new(hash)
-
-			  if web_page.save
-				q+=1
-				puts "grab_success! #{q}"
-			  end
-			  #end----------------------
-			end # if WebPage.exist_url?
-			#一秒的停顿时间
+				
+			end #if page.doc
+			#停顿时间
 			sleep pause
 
 		  end #if page?
@@ -125,73 +147,42 @@ namespace :grab do
 
   end
 
-  #分析页面 （需传入参数：tag=>网站标识，type=>还未定义）
-  desc "fetch_info"
-  task :fetch_info, [:tag,:type] do |t,args|
+  #处理图片 （把抓取回来的图片及描述信息转换为本社区符合规格的格式,需传入参数：mark=>网站标识，type=>还未定义）
+  desc "处理图片"
+  task :handle_img, [:mark,:type] do |t,args|
 	require 'nokogiri'	
 	require 'faraday'
 	#require 'open-uri'
-	args.with_defaults(:tag => 'def', :type => 1)
+	args.with_defaults(:mark => 'def', :type => 1)
 	puts '======start======='
 
-	web = WebInfo.where(:tab=>args[:tag])
-	if web.present?
-		web = web.first
-		title_f = web.config['title']
-		desc_f = web.config['desc']
-		img_f = web.config['img']
+	site = Site.find_by(mark: args[:mark])
+	if site.present?
 
-		items = WebRecord.where(:tab=>args[:tag],:state=>WebRecord::STATE[:no])
-		if items.present?
-			i=0
-			items.each do |item|
-				response = Faraday.get(item.url)
+		items = WebPage.where(site_id: site.id, state: 2)
+		i=0
+		items.each do |item|
+		  if item.present? and item.description.present?
+			doc = Nokogiri::HTML(item.description)
+			if doc.present?
 
-				case response.status
-				when 200
-				  html = response.body
-				  puts '200'
-				when 301..302
-					puts '302'
-				  html = Faraday.get(response[:location]).body
+				i+=1
+				puts 'aaaaaaaaaaa'
+				doc.css('p').each do |d|
+				  puts d.to_html
 				end
+				puts "num: #{i}"
+			end
+			options = {
+				:title=>'',
+				:imgs=>'',
+				:desc=>''
+			}
 
-				doc = Nokogiri::HTML(html)
-				if doc.present?
-					title = doc.css(title_f)
-					if title.present?
-						title = title.first.content
-					else
-						title = ''
-					end
-					imgs = []
-					doc.css(img_f).each do |img|
-						imgs << img if img.present?
-					end
 
-					desc = doc.css(desc_f)
-					if desc.present?
-						desc = desc.first.content 
-					else
-						desc = ''
-					end
-					i+=1
-					#puts doc
-					puts "num: #{i}"
-				end
-				options = {
-					:title=>title,
-					:imgs=>imgs,
-					:desc=>desc
-				}
-				puts "url: #{item.url}"
-				puts "title: #{options[:title]}"
-				puts "img: #{options[:imgs]}" 
-
-				item.update_attributes(options)
-					
-			end#loop_end
-		end#if items_end
+			#item.update_attributes(options)
+		  end #if item.present?
+		end#loop_end
 	end#if web.present?
 	puts "============end================="
   end

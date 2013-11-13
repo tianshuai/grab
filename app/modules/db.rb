@@ -4,6 +4,7 @@ class Site < ActiveRecord::Base
   ##关系
   has_many :webpages
 
+  ##验证
   validates :name, presence: true, length: { minimum: 2 }
   validates_presence_of :mark,                  message: '请输入标识'
   validates_uniqueness_of :mark,				message: '标识已存在'
@@ -34,7 +35,8 @@ class WebPage < ActiveRecord::Base
   ##关系
   belongs_to :site
 
-  #validates :title, presence: true, length: { minimum: 2 }
+  ##验证
+  validates :title, 							length: { maximum: 150, message: '长度小于150个字符' }
   validates_presence_of :url,                   message: '请输入网址'
   validates_uniqueness_of :url,					message: '网址已存在'
   validates_presence_of :mark,                  message: '请输入标识'
@@ -54,8 +56,10 @@ class WebPage < ActiveRecord::Base
 	no: 0,
 	#无效页面
 	invalid: 1,
-	#处理完成的页面
-	ok: 2
+	#获取页面信息
+	ok: 2,
+	#整理页面
+	finish: 3
   }
 
 
@@ -65,6 +69,30 @@ class WebPage < ActiveRecord::Base
 	webpage = self.find_by(url: url)
 	return true if webpage.present?
 	return false
+  end
+
+  #状态提示
+  def state_str
+	case self.state
+	when 0 then '保存来源url'
+	when 1 then '无效来源'
+	when 2 then '获取信息'
+	when 3 then '整理'
+	else
+	  'error'
+	end
+  end
+
+  #分类列表
+  def self.site_list(site_id)
+	return all if site_id.blank?
+	return where(site_id: site_id.to_i)
+  end
+
+  #状态列表
+  def self.state_list(stat)
+	return all if stat.blank?
+	return where(state: stat.to_i)
   end
 
 end

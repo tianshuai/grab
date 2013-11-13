@@ -1,0 +1,26 @@
+<h1>网址记录</h1>
+<table border="1">
+	<tr>
+		<td>ID</td>
+		<td>网站ID</td>
+		<td>标识</td>
+		<td>网址</td>
+		<td>标题</td>
+		<td>状态</td>
+		<td>创建时间</td>
+		<td>操作</td>
+	</tr>
+	<% @web_pages.each do |d| %>
+	<tr>
+		<td><%= d.id %></td>
+		<td><%= d.site_id %></td>
+		<td><%= d.mark %></td>
+		<td><a href="<%= d.url %>" target="_blank"><%= truncate(d.url, 15) %></a></td>
+		<td><%= truncate(d.title, 50) %></td>
+		<td><%= d.state_str %></td>
+		<td><%= d.created_at %></td>
+		<td><a href="/site/show/<%=d.id%>">详情</a></td>
+	</tr>
+	<%end%>
+</table>
+<%= will_paginate @web_pages if @web_pages.present? %>
