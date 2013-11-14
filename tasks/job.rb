@@ -68,24 +68,7 @@ namespace :grab do
 
 					#因为不同网站有不同规则,so从数据库动态读取配置
 					if conf.present?
-					  #eval(conf)
-					end
-
-					#描述
-					if doc.css("font.arial18").present?
-					  page_desc = doc.send('css', 'font.arial18').first.parent
-					  page_desc = page_desc.gsub(/<script.*?>.*?<\/script>/imx, '')
-					  page_desc = page_desc.gsub(/<style.*?>.*?<\/style>/imx, '')
-					  #不加?贪婪模式
-					  page_desc = page_desc.gsub(/<table.*?>.*<\/table>/imx, '')
-					  #puts page_desc
-
-					  if page_desc.present?
-						puts page_desc.class
-						
-
-					  end
-
+					  eval(conf)
 					end
 
 =begin
@@ -114,14 +97,15 @@ namespace :grab do
 						title: page_title,
 						description: page_desc,
 						cover_img: page_cover_img,
+						image_group: page_images,
 						tags: page_tags,
 						content: page_content,
 						category: match_tags
 					}
 					web_page = WebPage.new(hash)
 
-					#if web_page.save
-					if 1==1
+					if web_page.save
+					#if 1==1
 					  q+=1
 					  puts "grab_success! #{q}"
 					else

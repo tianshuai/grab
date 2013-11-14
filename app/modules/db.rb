@@ -52,14 +52,18 @@ class WebPage < ActiveRecord::Base
 
   #状态
   STATE = {
-	#未处理的页面
+	#未处理的页面(只有url)
 	no: 0,
 	#无效页面
 	invalid: 1,
-	#获取页面信息
+	#获取页面信息(未整理)
 	ok: 2,
-	#整理页面
-	finish: 3
+	#整理完成的页面
+	finish: 3,
+	#忽略(用于接口返回)
+	ignore: 5,
+	#发布成功(接口返回)
+	success: 8
   }
 
 
