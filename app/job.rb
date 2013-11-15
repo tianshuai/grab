@@ -95,7 +95,8 @@ get '/api/web_pages' do
   per_page = parm['ResultOptions']['ItemCount']
   page = parm['ResultOptions']['ItemStartNumber']
   arr = []
-  web_pages = WebPage.site_list(site_id).paginate(page: page, per_page: per_page)
+  puts parm
+  web_pages = WebPage.site_list(site_id).state_list(3).paginate(page: page, per_page: per_page)
   web_pages.each do |d|
 	hash = {
 	  id: d.id,
@@ -112,4 +113,60 @@ get '/api/web_pages' do
   end
 
   return { ResponseHeader: {code: 200}, Data: arr }.to_json
+end
+
+#shijue_api web_page show
+get '/api/web_page' do
+  parm = JSON.parse(params[:parm])
+  result = {}
+  begin
+    @web_page = WebPage.find(parm['id'])
+  rescue ActiveRecord::RecordNotFound
+	result[:Result] = false
+	result[:Info] = '内容不存在!'
+  else
+    result[:Result] = true
+	web_page = {
+	  id: @web_page.id,
+	  mark: @web_page.mark,
+	  title: @web_page.title,
+	  description: @web_page.description,
+	  url: @web_page.url,
+	  content: @web_page.content,
+	  tags: @web_page.tags,
+	  kind: @web_page.kind,
+	  site_id: @web_page.site_id,
+	  keyword: @web_page.keyword,
+	  category: @web_page.category,
+	  index: @web_page.index,
+	  cover_img: @web_page.cover_img,
+	  image_group: @web_page.image_group,
+	  created_at: @web_page.created_at,
+	  updated_at: @web_page.updated_at
+	}
+	result[:Data] = web_page
+  end
+  return result.to_json
+  
+end
+
+#shijue_api set web_page state
+get '/api/set_state' do
+  parm = JSON.parse(params[:parm])
+  result = {}
+  begin
+    @web_page = WebPage.find(parm['id'])
+  rescue ActiveRecord::RecordNotFound
+	result[:Result] = false
+	result[:Info] = '内容不存在!'
+  else
+	if @web_page.update(state: parm['state'])
+      result[:Result] = true
+	  result[:Info] = '设置成功!'
+	else
+      result[:Result] = false
+	  result[:Info] = '设置失败!'
+	end
+  end
+  return result.to_json
 end
