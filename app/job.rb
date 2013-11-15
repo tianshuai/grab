@@ -87,3 +87,29 @@ get '/site/show/:id' do
     erb :'sites/show'
   end
 end
+
+#shijue_api web_pages list
+get '/api/web_pages' do
+  parm = JSON.parse(params[:parm])
+  site_id = parm['RequestBody']['Query']['SiteId']
+  per_page = parm['ResultOptions']['ItemCount']
+  page = parm['ResultOptions']['ItemStartNumber']
+  arr = []
+  web_pages = WebPage.site_list(site_id).paginate(page: page, per_page: per_page)
+  web_pages.each do |d|
+	hash = {
+	  id: d.id,
+	  mark: d.mark,
+	  title: d.title,
+	  url: d.url,
+	  tags: d.tags,
+	  kind: d.kind,
+	  cover_img: d.cover_img,
+	  image_group: d.image_group,
+	  category: d.category
+	}
+	arr << hash
+  end
+
+  return { ResponseHeader: {code: 200}, Data: arr }.to_json
+end
