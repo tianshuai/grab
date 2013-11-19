@@ -17,6 +17,7 @@ namespace :grab do
 	  #初始化参数
 	  i,m,n,o,p,q,r = 0,0,0,0,0,0,0
 	  site_id = web.id
+	  site_url = web.url
 	  mark = web.mark
 	  keyword = web.keyword
 	  type = args[:type]
@@ -28,7 +29,7 @@ namespace :grab do
 	  #抓取选项
 	  opt = { discard_page_bodies: true, threads: 1, obey_robots_txt: false, user_agent: "Web Share", large_scale_crawl: true, read_timeout: 10, depth_limit: 100 }
 
-	  Anemone.crawl(web.url, opt) do |d|
+	  Anemone.crawl(site_url, opt) do |d|
 		if web.ignore_tags.present?
 		  puts "need filter url tags: #{web.ignore_tags}"
 		  d.skip_links_like /#{web.ignore_tags.gsub(',','|')}/ 
@@ -93,7 +94,7 @@ namespace :grab do
 						url: page_url,
 						mark: mark,
 						kind: type,
-						state: 2,
+						state: 3,
 						title: page_title,
 						description: page_desc,
 						cover_img: page_cover_img,

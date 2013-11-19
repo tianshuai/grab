@@ -24,13 +24,7 @@
 	<% if @web_page.image_group.present? %>
 		<% @web_page.image_group.split('##').each do |d| %>
 			<% arr = d.split('@@') %>
-			<% if arr.first[0]== '/' %>
-				<% if @web_page.site.present? %>
-					<img src="<%= File.join(@web_page.site.url, arr.first) %>" width="350" />
-				<%end%>
-			<%else%>
-				<img src="<%= arr.first %>" width="350" />
-			<%end%>
+			<img src="<%= arr.first %>" width="350" />
 			<br />
 			<%= arr.last %>
 			<br /><br />
