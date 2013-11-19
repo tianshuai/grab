@@ -88,6 +88,29 @@ get '/site/show/:id' do
   end
 end
 
+#shijue_api sites list
+get '/api/sites' do
+  #parm = JSON.parse(params[:parm])
+  sites = Site.normal
+  arr = []
+  sites.each do |d|
+	hash = {
+	  id: d.id,
+	  mark: d.mark,
+	  name: d.name,
+	  kind: d.kind,
+	  state: d.state,
+	  url: d.url,
+	  keyword: d.keyword,
+	  match_tags: d.match_tags,
+	  ignore_tags: d.ignore_tags,
+	  sleep: d.sleep
+	}
+	arr << hash
+  end
+  return { Result: true, Data: arr }.to_json
+end
+
 #shijue_api web_pages list
 get '/api/web_pages' do
   parm = JSON.parse(params[:parm])

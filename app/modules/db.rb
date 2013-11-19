@@ -22,11 +22,14 @@ class Site < ActiveRecord::Base
 
   #状态
   STATE = {
-	#未处理的页面
+	#关闭
 	no: 0,
-	#处理完成的页面
+	#开启
 	ok: 1	
   }
+
+  #正常
+  scope :normal,			-> { where(state: STATE[:ok]) }
 
 end
 
