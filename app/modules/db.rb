@@ -1,4 +1,5 @@
 # encoding: utf-8
+# 网站列表
 class Site < ActiveRecord::Base
 
   ##关系
@@ -33,6 +34,7 @@ class Site < ActiveRecord::Base
 
 end
 
+#抓取 list
 class WebPage < ActiveRecord::Base
 
   ##关系
@@ -43,8 +45,11 @@ class WebPage < ActiveRecord::Base
   validates_presence_of :url,                   message: '请输入网址'
   validates_uniqueness_of :url,					message: '网址已存在'
   validates_presence_of :mark,                  message: '请输入标识'
+  validates :description, 						length: { maximum: 65535, message: '长度不大于65535个字符' }
+  validates :cover_img, 						length: { maximum: 65535, message: '长度不大于65535个字符' }
+  validates :image_group, 						length: { maximum: 65535, message: '长度不大于65535个字符' }
 
-  #field: url(网址), site_id(关联网站id) kind(抓取类型: 1.单图,2.组图), state(状态: 0.未解析,1.解析成功), mark(标识:a-z), tags(标签), index(索引), title(标题), description(描述), cover_img(封面), category(类型), content(备用), created_at, updated_at
+  #field: url(网址), site_id(关联网站id) kind(抓取类型: 1.单图,2.组图), state(状态: 0.未解析,1.解析成功), mark(标识:a-z), tags(标签), index(索引), title(标题), description(描述), cover_img(封面), image_group(图片组及图片描述) category(类型), content(备用), created_at, updated_at
 
   ##常量
   #类型

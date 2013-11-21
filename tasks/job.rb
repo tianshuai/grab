@@ -8,6 +8,8 @@ namespace :grab do
   desc '抓取网页'
   task :spider, [:mark,:type] do |t,args|
 	require 'anemone'
+	require './lib/anemone/core.rb'
+	require './lib/anemone/page.rb'
 	args.with_defaults(:mark => 'def', :type => 1)
 	puts '======start======='
 	web = Site.find_by(mark: args[:mark])
@@ -27,7 +29,17 @@ namespace :grab do
 	  pause = web.sleep || 3
 
 	  #抓取选项
-	  opt = { discard_page_bodies: true, threads: 1, obey_robots_txt: false, user_agent: "Web Share", large_scale_crawl: true, read_timeout: 10, depth_limit: 100 }
+	  opt = {
+		discard_page_bodies: true,
+		#threads: 4,
+		obey_robots_txt: false,
+		user_agent: "Web Share",
+		crawl_subdomains: true,
+		large_scale_crawl: true
+		#read_timeout: 30,
+		#depth_limit: 1000
+		#delay: pause
+	  }
 
 	  Anemone.crawl(site_url, opt) do |d|
 		if web.ignore_tags.present?
@@ -100,7 +112,7 @@ namespace :grab do
 						cover_img: page_cover_img,
 						image_group: page_images,
 						tags: page_tags,
-						content: page_content,
+						#content: page_content,
 						category: match_tags
 					}
 					web_page = WebPage.new(hash)

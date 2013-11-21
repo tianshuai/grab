@@ -51,7 +51,7 @@ PLATFORMS
 
 DEPENDENCIES
   activerecord (= 4.0.0)
-  anemone (= 0.7.2)
+  anemone
   mysql2 (= 0.3.13)
   nokogiri (~> 1.6.0)
   sinatra (= 1.4.4)
