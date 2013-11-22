@@ -27,8 +27,18 @@
 		<input type="text" name="site[ignore_tags]" value="<%= @site.try(:ignore_tags) %>" />
 	</div>
 	<div>
+		<label for="site[is_subdomain]">抓子域名:</label>
+		<input type="radio" name="site[is_subdomain]" value="0" <%= @site.try(:is_subdomain)==0 ? 'checked="checked"' : '' %> />否
+		<input type="radio" name="site[is_subdomain]" value="1" <%= @site.try(:is_subdomain)==1 ? 'checked="checked"' : '' %> />是
+	</div>
+	<div>
 		<label for="site[conf]">间隔时间(s):</label>
 		<input type="text" name="site[sleep]" value="<%= @site.try(:sleep) %>" />
+	</div>
+	<div>
+		<label for="site[state]">状态:</label>
+		<input type="radio" name="site[state]" value="0" <%= @site.try(:state)==0 ? 'checked="checked"' : '' %> />禁用
+		<input type="radio" name="site[state]" value="1" <%= @site.try(:state)==1 ? 'checked="checked"' : '' %> />正常
 	</div>
 	<div>
 		<label for="site[conf]">配置信息(用于动态执行此处):</label><br />

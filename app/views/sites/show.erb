@@ -8,7 +8,10 @@
 	<h2>原地址</h2>
 	<span><a href="<%= @web_page.url %>" target="_blank"><%= @web_page.url %></a></span>
 </div>
-
+<div>
+	<h2>标签</h2>
+	<span><%= @web_page.tags %></span>
+</div>
 <div>
 	<h2>描述</h2>
 	<% if @web_page.description.present? %>

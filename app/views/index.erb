@@ -8,7 +8,9 @@
 		<td>选择器(判断是否要抓取的页面)</td>
 		<td>匹配url</td>
 		<td>过滤url</td>
-		<td>间隔时间</td>
+		<td>是否抓子域名</td>
+		<td>间隔(s)</td>
+		<td>状态</td>
 		<td>创建时间</td>
 		<td>操作</td>
 	</tr>
@@ -21,9 +23,11 @@
 		<td><%= d.keyword %></td>
 		<td><%= d.match_tags %></td>
 		<td><%= d.ignore_tags %></td>
+		<td><%= d.is_subdomain? ? '是' : '否' %></td>
 		<td><%= d.sleep %></td>
+		<td><%= d.state==0 ? '关闭' : '正常' %></td>
 		<td><%= d.created_at %></td>
-		<td><a href="/site/page_list?site_id=<%= d.id %>">记录</a> | <a href="/site/edit/<%= d.id %>">编辑</a> | <a href="/site/destroy/<%= d.id %>" >删除</a></td>
+		<td><a href="/site/page_list?site_id=<%= d.id %>">url列表</a> | <a href="/site/edit/<%= d.id %>">编辑</a> | <span>删除<span></td>
 	</tr>
 	<%end%>
 </table>

@@ -27,6 +27,8 @@ namespace :grab do
 	  conf = web.conf || ''
 	  #停顿时间
 	  pause = web.sleep || 3
+	  #是否抓取子域名
+	  is_sub_domain = web.is_subdomain?
 
 	  #抓取选项
 	  opt = {
@@ -34,7 +36,7 @@ namespace :grab do
 		#threads: 4,
 		obey_robots_txt: false,
 		user_agent: "Web Share",
-		crawl_subdomains: true,
+		crawl_subdomains: is_sub_domain,
 		large_scale_crawl: true
 		#read_timeout: 30,
 		#depth_limit: 1000
