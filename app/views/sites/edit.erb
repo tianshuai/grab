@@ -19,12 +19,16 @@
 		<input type="text" name="site[keyword]" value="<%= @site.try(:keyword) %>" />
 	</div>
 	<div>
-		<label for="site[match_tags]">匹配标签:</label>
+		<label for="site[match_tags]">匹配标签(正则):</label>
 		<input type="text" name="site[match_tags]" value="<%= @site.try(:match_tags) %>" />
 	</div>
 	<div>
-		<label for="site[ignore_tags]">过滤标签:</label>
+		<label for="site[ignore_tags]">过滤标签(正则):</label>
 		<input type="text" name="site[ignore_tags]" value="<%= @site.try(:ignore_tags) %>" />
+	</div>
+	<div>
+		<label for="site[conf]">间隔时间(s):</label>
+		<input type="text" name="site[sleep]" value="<%= @site.try(:sleep) %>" />
 	</div>
 	<div>
 		<label for="site[is_subdomain]">抓子域名:</label>
@@ -32,16 +36,14 @@
 		<input type="radio" name="site[is_subdomain]" value="1" <%= @site.try(:is_subdomain)==1 ? 'checked="checked"' : '' %> />是
 	</div>
 	<div>
-		<label for="site[conf]">间隔时间(s):</label>
-		<input type="text" name="site[sleep]" value="<%= @site.try(:sleep) %>" />
-	</div>
-	<div>
 		<label for="site[state]">状态:</label>
 		<input type="radio" name="site[state]" value="0" <%= @site.try(:state)==0 ? 'checked="checked"' : '' %> />禁用
 		<input type="radio" name="site[state]" value="1" <%= @site.try(:state)==1 ? 'checked="checked"' : '' %> />正常
 	</div>
 	<div>
-		<label for="site[conf]">配置信息(用于动态执行此处):</label><br />
+		<label for="site[conf]">配置信息(用于程序动态执行此处):</label><br />
+		<span style="font-size:12px;color:999;">说明: 1.提供的变量: doc(DOM Nokogiri对象);　site_url(网站url); ....  </span><br />
+		<span style="font-size:12px;color:999;">说明: 2.需要附值的变量: page_title(标题);　page_desc(描述); page_content(备用); page_tags(标签:用##分隔); page_images(图片组: 用##分隔,每个图片及描述用@@分隔); ....  </span><br />
 		<textarea name="site[conf]", style="width:800px;height:500px;" ><%= @site.try(:conf) %></textarea>
 	</div>
 

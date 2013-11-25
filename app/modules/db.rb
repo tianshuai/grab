@@ -48,6 +48,7 @@ class WebPage < ActiveRecord::Base
   validates :description, 						length: { maximum: 65535, message: '长度不大于65535个字符' }
   validates :cover_img, 						length: { maximum: 65535, message: '长度不大于65535个字符' }
   validates :image_group, 						length: { maximum: 65535, message: '长度不大于65535个字符' }
+  validates :tags, 								length: { maximum: 790,   message: '长度不大于790个字符' }
 
   #field: url(网址), site_id(关联网站id) kind(抓取类型: 1.单图,2.组图), state(状态: 0.未解析,1.解析成功), mark(标识:a-z), tags(标签), index(索引), title(标题), description(描述), cover_img(封面), image_group(图片组及图片描述) category(类型), content(备用), created_at, updated_at
 
@@ -90,6 +91,8 @@ class WebPage < ActiveRecord::Base
 	when 1 then '无效来源'
 	when 2 then '获取信息'
 	when 3 then '整理'
+	when 5 then '忽略'
+	when 8 then '发布成功'
 	else
 	  'error'
 	end
