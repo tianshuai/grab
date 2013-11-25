@@ -6,11 +6,13 @@ namespace :grab do
 
   #抓取网页（需传入参数：tag=>网站标识，type=>还未定义）
   desc '抓取网页'
-  task :spider, [:mark,:type] do |t,args|
+  task :spider, [ :mark, :type, :test ] do |t,args|
 	require 'anemone'
 	require './lib/anemone/core.rb'
 	require './lib/anemone/page.rb'
-	args.with_defaults(:mark => 'def', :type => 1)
+	args.with_defaults(:mark => 'def', :type => 1, :test => false)
+	#是否测试
+	is_test = args[:test]
 	puts '======start======='
 	web = Site.find_by(mark: args[:mark])
 
@@ -119,14 +121,19 @@ namespace :grab do
 					}
 					web_page = WebPage.new(hash)
 
-					if web_page.save
-					#if 1==1
+					#如果是测试,则不存数据库
+					if is_test
 					  q+=1
 					  puts "grab_success! #{q}"
 					else
-					  r+=1
-					  puts "save failed! #{r}"
-					end
+					  if web_page.save
+					    q+=1
+					    puts "grab_success! #{q}"
+					  else
+					    r+=1
+					    puts "save failed! #{r}"
+					  end
+					end #end is_test
 
 				  end # if WebPage.exist_url?
 				else
