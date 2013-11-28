@@ -12,7 +12,7 @@ helpers do
 end
 
 get '/'	do
-  @sites = Site.paginate(page: params[:page], per_page: 10)
+  @sites = Site.paginate(page: params[:page], per_page: 30)
   erb :index
 end
 

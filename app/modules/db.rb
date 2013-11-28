@@ -11,6 +11,7 @@ class Site < ActiveRecord::Base
   validates_uniqueness_of :mark,				message: '标识已存在'
   validates_presence_of :url,                   message: '请输入网址'
   validates_uniqueness_of :url,					message: '标识已存在'
+  validates :remarks, 							length: { maximum: 140,   message: '长度不大于140个字符' }
 
   #field: name(网站名称), kind(类型: 1.抓取,2.未定义), state(状态: 0.关闭,1.正常), mark(标识:a-z), tags(标签), url(网址), keyword(关键字), match_tags（匹配标签，抓取时只会取含有该关键字的Url）,ignore_tags(需要过滤的关键字), sleep(间隔执行时间,单位秒,默认为3), is_subdomain(是否抓取子域名 0.否, 1.是;　默认0), conf(配置,不同规则的网站有不同的配置,见详情)
 

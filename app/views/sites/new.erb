@@ -30,6 +30,10 @@
 		<input type="text" name="site[sleep]" value="<%= @site.try(:sleep) %>" />
 	</div>
 	<div>
+		<label for="site[remarks]">备注(小于150字):</label>
+		<textarea name="site[remarks]", style="width:200px;height:50px;" ></textarea>
+	</div>
+	<div>
 		<label for="site[is_subdomain]">抓子域名:</label>
 		<input type="radio" name="site[is_subdomain]" value="0" <%= @site.try(:is_subdomain)==0 ? 'checked="checked"' : '' %> />否
 		<input type="radio" name="site[is_subdomain]" value="1" <%= @site.try(:is_subdomain)==1 ? 'checked="checked"' : '' %> />是

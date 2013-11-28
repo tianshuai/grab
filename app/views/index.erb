@@ -5,13 +5,10 @@
 		<td>网站名称</td>
 		<td>标识</td>
 		<td>网址</td>
-		<td>选择器(判断是否要抓取的页面)</td>
-		<td>匹配url(正则)</td>
-		<td>过滤url(正则)</td>
 		<td>是否抓子域名</td>
 		<td>间隔(s)</td>
 		<td>状态</td>
-		<td>创建时间</td>
+		<td>备注</td>
 		<td>操作</td>
 	</tr>
 	<% @sites.each do |d| %>
@@ -19,14 +16,11 @@
 		<td><%= d.id %></td>
 		<td><%= d.name %></td>
 		<td><%= d.mark %></td>
-		<td><%= d.url %></td>
-		<td><%= d.keyword %></td>
-		<td><%= d.match_tags %></td>
-		<td><%= d.ignore_tags %></td>
+		<td><a href="<%= d.url %>" target="_blank"><%= d.url %></a></td>
 		<td><%= d.is_subdomain? ? '是' : '否' %></td>
 		<td><%= d.sleep %></td>
 		<td><%= d.state==0 ? '关闭' : '正常' %></td>
-		<td><%= d.created_at %></td>
+		<td><%= d.remarks %></td>
 		<td><a href="/site/page_list?site_id=<%= d.id %>">url列表</a> | <a href="/site/edit/<%= d.id %>">编辑</a> | <span>删除<span></td>
 	</tr>
 	<%end%>

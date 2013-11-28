@@ -8,6 +8,7 @@ namespace :grab do
   desc '抓取网页'
   task :spider, [ :mark, :type, :test ] do |t,args|
 	require 'anemone'
+	require 'iconv'
 	require './lib/anemone/core.rb'
 	require './lib/anemone/page.rb'
 	args.with_defaults(:mark => 'def', :type => 1, :test => false)
@@ -45,7 +46,7 @@ namespace :grab do
 		#delay: pause
 	  }
 
-	  Anemone.crawl(site_url, opt) do |d|
+	  Anemone.crawl(URI.escape(site_url), opt) do |d|
 		if web.ignore_tags.present?
 		  puts "need filter url tags: #{web.ignore_tags}"
 		  d.skip_links_like /#{web.ignore_tags.gsub(',','|')}/ 
@@ -65,7 +66,9 @@ namespace :grab do
 			  puts "url: #{page_url}"
 			  #抓取信息start
 			  if page.doc
+				page.doc.meta_encoding = 'utf-8'
 				doc = page.doc
+				#doc = Iconv.iconv("UTF-8","GB2312",doc)
 				#是否是要抓的页面?
 				if doc.css(keyword).present?
 				  if WebPage.exist_url?(page_url)
@@ -126,12 +129,17 @@ namespace :grab do
 					  q+=1
 					  puts "grab_success! #{q}"
 					else
-					  if web_page.save
-					    q+=1
-					    puts "grab_success! #{q}"
-					  else
-					    r+=1
-					    puts "save failed! #{r}"
+					  #如果遇到错误编码将停止抓取跳出错误,所以加上异常处理
+					  begin
+					    if web_page.save
+					      q+=1
+					      puts "grab_success! #{q}"
+					    else
+					      r+=1
+					      puts "save failed! #{r}"
+					    end
+					  rescue
+						puts "save error..."
 					  end
 					end #end is_test
 
