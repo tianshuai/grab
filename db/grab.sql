@@ -38,12 +38,14 @@ CREATE TABLE `sites` (
   `conf` text,
   `sleep` int(3) DEFAULT '3',
   `is_subdomain` int(1) DEFAULT '0',
+  `remarks` varchar(150) DEFAULT NULL,
+  `is_filter_param` int(1) DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `mark` (`mark`),
   UNIQUE KEY `url` (`url`),
   KEY `state` (`state`),
   KEY `kind` (`kind`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -78,7 +80,7 @@ CREATE TABLE `web_pages` (
   KEY `site_id` (`site_id`),
   KEY `kind` (`kind`),
   KEY `state` (`state`)
-) ENGINE=InnoDB AUTO_INCREMENT=9649 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=18315 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -90,4 +92,4 @@ CREATE TABLE `web_pages` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-11-25 11:41:24
+-- Dump completed on 2013-11-29 11:02:13

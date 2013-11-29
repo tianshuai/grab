@@ -32,6 +32,8 @@ namespace :grab do
 	  pause = web.sleep || 3
 	  #是否抓取子域名
 	  is_sub_domain = web.is_subdomain?
+	  #是否过滤url参数?(防止重复)
+	  is_filter_param = web.is_filter_param?
 
 	  #抓取选项
 	  opt = {
@@ -63,7 +65,18 @@ namespace :grab do
 		  if page and page.url.present?
 			  next if page.body == nil
 			  page_url = page.url.to_s
+			  #是否过滤参数(如?page=2,防止重复)
+			  if is_filter_param
+				if page_url.include?('?')
+				  page_url = page_url.split('?').first
+				end
+			  end
+			  #防止重复抓取,去掉url后边的'/'
+			  if page_url[-1]=='/'
+				page_url = page_url[0,page_url.size-1]
+			  end
 			  puts "url: #{page_url}"
+
 			  #抓取信息start
 			  if page.doc
 				page.doc.meta_encoding = 'utf-8'
@@ -161,115 +174,12 @@ namespace :grab do
 
   end
 
-  #处理图片 （把抓取回来的图片及描述信息转换为本社区符合规格的格式,需传入参数：mark=>网站标识，type=>还未定义）
-  desc "处理图片"
-  task :handle_img, [:mark,:type] do |t,args|
-	require 'nokogiri'	
-	require 'faraday'
-	#require 'open-uri'
-	args.with_defaults(:mark => 'def', :type => 1)
-	puts '======start======='
-
-	site = Site.find_by(mark: args[:mark])
-	if site.present?
-
-		items = WebPage.where(site_id: site.id, state: 2)
-		i=0
-		items.each do |item|
-		  if item.present? and item.description.present?
-			doc = Nokogiri::HTML(item.description)
-			if doc.present?
-
-				i+=1
-				puts 'aaaaaaaaaaa'
-				doc.css('p').each do |d|
-				  puts d.to_html
-				end
-				puts "num: #{i}"
-			end
-			options = {
-				:title=>'',
-				:imgs=>'',
-				:desc=>''
-			}
 
 
-			#item.update_attributes(options)
-		  end #if item.present?
-		end#loop_end
-	end#if web.present?
-	puts "============end================="
-  end
 
-
-  ##下载图片保存到本地
-  desc "down_img"
-  task :down_img, [:tag,:type] do |t,args|
-	args.with_defaults(:tag => 'def', :type => 1)
-	require 'open-uri'
-	require 'mini_magick'
-	puts '======start======='
-	items = WebRecord.where(:tab=>args[:tag],:state=>WebRecord::STATE[:no])
-
-	items.each_with_index do |item,index|
-		if item.present? and item.imgs.present?
-			#response = Faraday.get(item.imgs)
-			ext = item.imgs.split('.').last
-			file_name = "#{Time.now.to_i.to_s}#{rand(10000)}.#{ext}"
-			path = "/extend/images/sheji_new/#{file_name}"
-			#File.new(path,'w')
-			
-
-			image_io= open(item.imgs)
-
-			image_mini = MiniMagick::Image.read(image_io)
-			#	image_mini.combine_options do |img|
-			#		img.quality '100'
-			#	end
-			image_mini.write(path)
-			#return false if index>2
-
-		end
-	end
-
-  end
-
-  ##测试
-  desc 'test'
-  task :test do
-	require 'nokogiri'	
-	require 'faraday'
-	puts 'begin'
-	#path = settings.root
-	path = '/extend/bathroom.htm'
-	html = open(path)
-	doc = Nokogiri::HTML(html)
-	doc.css('html').each do |item|
-        m = /dsz\.contents\.push[^;]*/
-		arr =  item.content.scan(m)
-		if arr .present?
-			arr.each do |a|
-				url = a.split(',')
-				if url.is_a?(Array) and url.size>3
-					puts url[2]
-				end
-			end
-		end
-
-	end
-		
-
-
-	#puts doc.at_css('html').content.scan(m)
-	#puts doc.css('script')[34].content
-
-
-  end
-
-
-  ##更新数据
-  desc "update_data"
-  task :update_data, [:tag,:type] do |t,args|
+  ##去除重复url
+  desc "drop_repeat_url"
+  task :drop_repeat_url, [:tag,:type] do |t,args|
 
 	puts '======start======='
 	items = WebRecord.where(:tab=>args[:tag],:state=>WebRecord::STATE[:no])

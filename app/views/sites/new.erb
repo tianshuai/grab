@@ -39,6 +39,11 @@
 		<input type="radio" name="site[is_subdomain]" value="1" <%= @site.try(:is_subdomain)==1 ? 'checked="checked"' : '' %> />是
 	</div>
 	<div>
+		<label for="site[is_filter_param]">过滤url参数:</label>
+		<input type="radio" name="site[is_filter_param]" value="0" <%= @site.try(:is_filter_param)==0 ? 'checked="checked"' : '' %> />否
+		<input type="radio" name="site[is_filter_param]" value="1" <%= @site.try(:is_filter_param)==1 ? 'checked="checked"' : '' %> />是
+	</div>
+	<div>
 		<label for="site[state]">状态:</label>
 		<input type="radio" name="site[state]" value="0" <%= @site.try(:state)==0 ? 'checked="checked"' : '' %> />禁用
 		<input type="radio" name="site[state]" value="1" <%= @site.try(:state)==1 ? 'checked="checked"' : '' %> />正常
