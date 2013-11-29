@@ -7,8 +7,6 @@ namespace :grab do
   #抓取网页（需传入参数：tag=>网站标识，type=>还未定义）
   desc '抓取网页'
   task :spider, [ :mark, :type, :test ] do |t,args|
-	require 'anemone'
-	require 'iconv'
 	require './lib/anemone/core.rb'
 	require './lib/anemone/page.rb'
 	args.with_defaults(:mark => 'def', :type => 1, :test => false)
