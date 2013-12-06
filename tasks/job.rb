@@ -32,6 +32,12 @@ namespace :grab do
 	  is_sub_domain = web.is_subdomain?
 	  #是否过滤url参数?(防止重复)
 	  is_filter_param = web.is_filter_param?
+      #要抓的地址(如果字段last_url不存在取字段url)
+      if web.last_url.present?
+        grab_url = web.last_url
+      else
+        grab_url = site_url
+      end
 
 	  #抓取选项
 	  opt = {
@@ -46,7 +52,7 @@ namespace :grab do
 		#delay: pause
 	  }
 
-	  Anemone.crawl(URI.escape(site_url), opt) do |d|
+	  Anemone.crawl(URI.escape(grab_url), opt) do |d|
 		if web.ignore_tags.present?
 		  puts "need filter url tags: #{web.ignore_tags}"
 		  d.skip_links_like /#{web.ignore_tags.gsub(',','|')}/ 

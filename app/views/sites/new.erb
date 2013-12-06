@@ -30,6 +30,11 @@
 		<input type="text" name="site[sleep]" value="<%= @site.try(:sleep) %>" />
 	</div>
 	<div>
+		<label for="site[last_url]">¿?¿?¿?¿?¿?¿?¿?¿?:</label>
+		<input type="text" name="site[last_url]" value="<%= @site.try(:last_url) %>" />
+	</div>
+
+	<div>
 		<label for="site[remarks]">备注(小于150字):</label>
 		<textarea name="site[remarks]", style="width:200px;height:50px;" ></textarea>
 	</div>
